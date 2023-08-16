@@ -4,3 +4,13 @@ server:
 spring:
   application:
     name: taskManager
+  profiles:
+    active: ${APP_ENV}
+
+  liquibase:
+    #    enabled: true
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

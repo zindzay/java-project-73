@@ -1,5 +1,5 @@
 setup:
-	gradle wrapper --gradle-version 8.2
+	gradle wrapper --gradle-version 7.4
 
 clean:
 	./gradlew clean
@@ -30,5 +30,11 @@ report:
 
 check-updates:
 	./gradlew dependencyUpdates
+
+generate-migrations:
+	gradle diffChangeLog
+
+db-migrate:
+	./gradlew update
 
 .PHONY: build
