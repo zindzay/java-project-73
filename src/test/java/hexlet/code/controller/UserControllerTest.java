@@ -121,9 +121,9 @@ class UserControllerTest {
         assertThat(responseWithBadRequest.getContentAsString())
                 .contains("Your last name needs to be between 1 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString())
-                .contains("Your first name needs to be between 8 and 30 characters long");
+                .contains("Your first name needs to be between 1 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString())
-                .contains("Your password needs to be between 8 and 30 characters long");
+                .contains("Your password needs to be between 3 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString()).contains("Please enter a valid email address");
         assertEquals(1, userRepository.count());
     }
@@ -171,9 +171,9 @@ class UserControllerTest {
         assertThat(responseWithBadRequest.getContentAsString())
                 .contains("Your last name needs to be between 1 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString())
-                .contains("Your first name needs to be between 8 and 30 characters long");
+                .contains("Your first name needs to be between 1 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString())
-                .contains("Your password needs to be between 8 and 30 characters long");
+                .contains("Your password needs to be between 3 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString()).contains("Please enter a valid email address");
 
         utils.createDefaultUser();

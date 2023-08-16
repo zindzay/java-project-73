@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Size;
 
 public record UserDto(
         @NotBlank(message = "First name is required")
-        @Size(min = 1, max = 30, message = "Your first name needs to be between 8 and 30 characters long")
+        @Size(min = 1, max = 30, message = "Your first name needs to be between 1 and 30 characters long")
         String firstName,
 
         @NotBlank(message = "Last name is required")
@@ -18,6 +18,6 @@ public record UserDto(
         String email,
 
         @NotBlank(message = "Password is required")
-        @Size(min = 3, max = 30, message = "Your password needs to be between 8 and 30 characters long")
+        @Size(min = 3, max = 30, message = "Your password needs to be between 3 and 30 characters long")
         String password) {
 }

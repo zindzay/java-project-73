@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.ErrorDto;
-import hexlet.code.dto.UserDto;
-import hexlet.code.model.User;
-import hexlet.code.service.UserService;
+import hexlet.code.dto.StatusDto;
+import hexlet.code.model.Status;
+import hexlet.code.service.StatusService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,29 +26,26 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("${base-url}" + UserController.USER_CONTROLLER_PATH)
-public class UserController {
+@RequestMapping("${base-url}" + StatusController.STATUS_CONTROLLER_PATH)
+public class StatusController {
 
-    public static final String USER_CONTROLLER_PATH = "/users";
+    public static final String STATUS_CONTROLLER_PATH = "/statuses";
     public static final String ID = "/{id}";
-    private static final String ONLY_OWNER_BY_ID = """
-                @userRepository.findById(#id).get().getEmail() == authentication.getName()
-            """;
 
-    private final UserService userService;
+    private final StatusService statusService;
 
-    @Operation(summary = "Get all users")
+    @Operation(summary = "Get all statuses")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok().body(userService.findAllUsers());
+    public ResponseEntity<List<Status>> getAllUsers() {
+        return ResponseEntity.ok().body(statusService.findAllStatuses());
     }
 
-    @Operation(summary = "Get user by id")
+    @Operation(summary = "Get status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -59,25 +55,26 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping(ID)
-    public ResponseEntity<User> getUserById(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(userService.findUserById(id));
+    public ResponseEntity<Status> getUserById(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(statusService.findStatusById(id));
     }
 
-    @Operation(summary = "Create new user")
+    @Operation(summary = "Create new status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid final UserDto dto) {
-        final User user = userService.createUser(dto);
+    public ResponseEntity<Status> createUser(@RequestBody @Valid final StatusDto dto) {
+        final Status status = statusService.createStatus(dto);
         return ResponseEntity
-                .created(ServletUriComponentsBuilder.fromCurrentRequest().path(ID).buildAndExpand(user.getId()).toUri())
-                .body(user);
+                .created(ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path(ID).buildAndExpand(status.getId()).toUri())
+                .body(status);
     }
 
-    @Operation(summary = "Update user by id")
+    @Operation(summary = "Update status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -86,14 +83,13 @@ public class UserController {
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
-    @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
-    public ResponseEntity<User> updateUserById(@PathVariable final long id,
-                                               @RequestBody @Valid final UserDto dto) {
-        return ResponseEntity.ok().body(userService.updateUserById(id, dto));
+    public ResponseEntity<Status> updateUserById(@PathVariable final long id,
+                                                 @RequestBody @Valid final StatusDto dto) {
+        return ResponseEntity.ok().body(statusService.updateStatusById(id, dto));
     }
 
-    @Operation(summary = "Delete user by id")
+    @Operation(summary = "Delete status by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -101,10 +97,9 @@ public class UserController {
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
-    @PreAuthorize(ONLY_OWNER_BY_ID)
     @DeleteMapping(ID)
     public void deleteUserById(@PathVariable final long id) {
-        userService.deleteUserById(id);
+        statusService.deleteStatusById(id);
     }
 
 }

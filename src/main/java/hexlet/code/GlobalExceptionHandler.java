@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.dto.ErrorDto;
+import hexlet.code.exeptions.StatusNotFoundException;
 import hexlet.code.exeptions.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -16,8 +17,8 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorDto> handleNotFoundException(final UserNotFoundException exception) {
+    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class})
+    public ResponseEntity<ErrorDto> handleNotFoundException(final RuntimeException exception) {
         final List<String> errors = List.of(exception.getMessage());
 
         return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
