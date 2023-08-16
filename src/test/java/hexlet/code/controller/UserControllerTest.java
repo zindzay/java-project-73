@@ -2,6 +2,7 @@ package hexlet.code.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.TestConfig;
+import hexlet.code.dto.LoginDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
@@ -15,10 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
 import java.util.List;
 
 import static hexlet.code.config.TestConfig.TEST_PROFILE;
+import static hexlet.code.config.security.SecurityConfig.LOGIN;
 import static hexlet.code.controller.UserController.ID;
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static hexlet.code.utils.TestUtils.TEST_USERNAME;
@@ -56,9 +59,10 @@ class UserControllerTest {
     }
 
     @Test
-    void getAllUsers() throws Exception {
+    void getAllUsersTest() throws Exception {
         utils.createDefaultUser();
-        final MockHttpServletResponse response = utils.perform(get(USER_CONTROLLER_PATH))
+        final MockHttpServletResponse response = utils
+                .perform(get(utils.getBaseUrl() + USER_CONTROLLER_PATH))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -68,12 +72,13 @@ class UserControllerTest {
     }
 
     @Test
-    void getUserById() throws Exception {
+    void getUserByIdTest() throws Exception {
         // get user by id
         utils.createDefaultUser();
         final User expectedUser = userRepository.findAll().get(0);
         final MockHttpServletResponse response = utils.perform(
-                        get(USER_CONTROLLER_PATH + ID, expectedUser.getId())
+                        get(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, expectedUser.getId()),
+                        TEST_USERNAME
                 ).andExpect(status().isOk())
                 .andReturn()
                 .getResponse();
@@ -85,16 +90,17 @@ class UserControllerTest {
         assertEquals(expectedUser.getLastName(), user.getLastName());
 
         // not found
-        utils.perform(get(USER_CONTROLLER_PATH + ID, 100))
+        utils.perform(get(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, 100), TEST_USERNAME)
                 .andExpect(status().isNotFound());
 
         // unprocessable entity
-        utils.perform(get(USER_CONTROLLER_PATH + ID, "error"))
+        utils.perform(get(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID,
+                        "error"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
     }
 
     @Test
-    void createUser() throws Exception {
+    void createUserTest() throws Exception {
         // created
         assertEquals(0, userRepository.count());
         utils.createDefaultUser().andExpect(status().isCreated());
@@ -104,7 +110,8 @@ class UserControllerTest {
 
         // bad request
         final UserDto userDtoWithBadRequest = new UserDto("", "", "email", "");
-        final MockHttpServletResponse responseWithBadRequest = utils.perform(post(USER_CONTROLLER_PATH)
+        final MockHttpServletResponse responseWithBadRequest = utils
+                .perform(post(utils.getBaseUrl() + USER_CONTROLLER_PATH)
                         .content(asJson(userDtoWithBadRequest))
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
@@ -123,31 +130,40 @@ class UserControllerTest {
     }
 
     @Test
-    void updateUser() throws Exception {
+    void updateUserTest() throws Exception {
         // updated
         utils.createDefaultUser();
-
         final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
         final UserDto userDto = new UserDto("new first name", "new last name",
                 TEST_USERNAME_2, "new password");
-        utils.perform(put(USER_CONTROLLER_PATH + ID, userId)
+        utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
                 .content(asJson(userDto))
-                .contentType(APPLICATION_JSON)).andExpect(status().isOk());
+                .contentType(APPLICATION_JSON), TEST_USERNAME).andExpect(status().isOk());
         assertTrue(userRepository.existsById(userId));
         assertNull(userRepository.findByEmail(TEST_USERNAME).orElse(null));
         assertNotNull(userRepository.findByEmail(TEST_USERNAME_2).orElse(null));
 
-        // not found
-        utils.perform(put(USER_CONTROLLER_PATH + ID, 100)
+        // forbidden
+        final String forbiddenUserName = "test@test.test";
+        final UserDto forbiddenUserDto = new UserDto("firstName",
+                "lastName",
+                forbiddenUserName,
+                "password");
+        utils.createUser(forbiddenUserDto);
+        final Long forbiddenUserId = userRepository.findByEmail(forbiddenUserName).get().getId();
+        utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, forbiddenUserId)
                 .content(asJson(userDto))
-                .contentType(APPLICATION_JSON)).andExpect(status().isNotFound());
+                .contentType(APPLICATION_JSON), TEST_USERNAME).andExpect(status().isForbidden());
+        utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
+                .content(asJson(userDto))
+                .contentType(APPLICATION_JSON)).andExpect(status().isForbidden());
 
         // bad request
         final UserDto userDtoWithBadRequest = new UserDto("", "", "email", "");
         final MockHttpServletResponse responseWithBadRequest =
-                utils.perform(put(USER_CONTROLLER_PATH + ID, userId)
+                utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
                                 .content(asJson(userDtoWithBadRequest))
-                                .contentType(APPLICATION_JSON))
+                                .contentType(APPLICATION_JSON), TEST_USERNAME)
                         .andExpect(status().isBadRequest())
                         .andReturn()
                         .getResponse();
@@ -166,25 +182,61 @@ class UserControllerTest {
         final Long userIdWithUnprocessableEntity = userRepository.findByEmail(TEST_USERNAME).get().getId();
         final UserDto userDtoWithUnprocessableEntity = new UserDto("new first name", "new last name",
                 TEST_USERNAME_2, "new password");
-        utils.perform(put(USER_CONTROLLER_PATH + ID, userIdWithUnprocessableEntity)
+        utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userIdWithUnprocessableEntity)
                 .content(asJson(userDtoWithUnprocessableEntity))
-                .contentType(APPLICATION_JSON)).andExpect(status().isUnprocessableEntity());
+                .contentType(APPLICATION_JSON), TEST_USERNAME).andExpect(status().isUnprocessableEntity());
     }
 
     @Test
-    void deleteUser() throws Exception {
+    void deleteUserTest() throws Exception {
         // deleted
         utils.createDefaultUser();
         final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
-        utils.perform(delete(USER_CONTROLLER_PATH + ID, userId))
+        utils.perform(delete(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME)
                 .andExpect(status().isOk());
         assertEquals(0, userRepository.count());
 
+        // forbidden
+        final String forbiddenUserName = "test@test.test";
+        final UserDto forbiddenUserDto = new UserDto("firstName",
+                "lastName",
+                forbiddenUserName,
+                "password");
+        utils.createUser(forbiddenUserDto);
+        final Long forbiddenUserId = userRepository.findByEmail(forbiddenUserName).get().getId();
+        utils.perform(delete(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, forbiddenUserId), TEST_USERNAME)
+                .andExpect(status().isForbidden());
+        assertEquals(1, userRepository.count());
+
         // unprocessable entity
         utils.createDefaultUser();
-        utils.perform(delete(USER_CONTROLLER_PATH + ID, "userId"))
+        utils.perform(delete(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID,
+                        "userId"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
-        assertEquals(1, userRepository.count());
+        assertEquals(2, userRepository.count());
+    }
+
+    @Test
+    void loginTest() throws Exception {
+        // login
+        utils.createDefaultUser();
+        final LoginDto loginDto = new LoginDto(
+                utils.getTestRegistrationDto().email(),
+                utils.getTestRegistrationDto().password()
+        );
+        final MockHttpServletRequestBuilder loginRequest = post(utils.getBaseUrl() + LOGIN)
+                .content(asJson(loginDto))
+                .contentType(APPLICATION_JSON);
+        utils.perform(loginRequest).andExpect(status().isOk());
+
+        // unauthorized
+        final LoginDto loginDtoUnauthorized = new LoginDto(
+                "",
+                ""
+        );
+        final MockHttpServletRequestBuilder loginRequestUnauthorized = post(utils.getBaseUrl() + LOGIN)
+                .content(asJson(loginDtoUnauthorized)).contentType(APPLICATION_JSON);
+        utils.perform(loginRequestUnauthorized).andExpect(status().isUnauthorized());
     }
 
 }

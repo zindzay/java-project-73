@@ -5,6 +5,7 @@ import hexlet.code.exeptions.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,13 @@ public class GlobalExceptionHandler {
                 .toList();
 
         return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public final ResponseEntity<ErrorDto> handleAccessDeniedException(final AccessDeniedException exception) {
+        final List<String> errors = List.of(exception.getMessage());
+
+        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.FORBIDDEN);
     }
 
 }

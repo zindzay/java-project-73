@@ -18,7 +18,7 @@ class WelcomeControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void testWelcome() throws Exception {
+    void welcomeTest() throws Exception {
         final MockHttpServletResponse response = mockMvc
                 .perform(get("/welcome"))
                 .andReturn()
