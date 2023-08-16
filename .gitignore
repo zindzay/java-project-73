@@ -36,3 +36,8 @@ hs_err_pid*
 *.db
 /development-create-all.sql
 /development-drop-all.sql
+
+# Frontend
+node
+frontend/node_modules
+frontend/build

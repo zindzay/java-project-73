@@ -1,4 +1,4 @@
 package hexlet.code.dto;
 
-public record LoginDto(String username, String password) {
+public record LoginDto(String email, String password) {
 }

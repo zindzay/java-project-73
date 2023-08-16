@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
-import java.util.Objects;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -39,13 +38,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorDto> handleValidationErrors(final MethodArgumentNotValidException exception) {
-        final List<String> errors = exception.getBindingResult().getFieldErrors().stream()
-                .map(FieldError::getDefaultMessage)
-                .filter(Objects::nonNull)
-                .toList();
-
-        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<List<FieldError>> handleValidationErrors(final MethodArgumentNotValidException exception) {
+        return new ResponseEntity<>(exception.getBindingResult().getFieldErrors(), new HttpHeaders(),
+                HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

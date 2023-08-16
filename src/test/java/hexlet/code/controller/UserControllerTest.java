@@ -108,13 +108,12 @@ class UserControllerTest {
         // unprocessable entity
         utils.createDefaultUser().andExpect(status().isUnprocessableEntity());
 
-        // bad request
         final UserDto userDtoWithBadRequest = new UserDto("", "", "email", "");
         final MockHttpServletResponse responseWithBadRequest = utils
                 .perform(post(utils.getBaseUrl() + USER_CONTROLLER_PATH)
                         .content(asJson(userDtoWithBadRequest))
                         .contentType(APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
+                .andExpect(status().isUnprocessableEntity())
                 .andReturn()
                 .getResponse();
         assertThat(responseWithBadRequest.getContentAsString()).contains("Last name is required");
@@ -158,13 +157,13 @@ class UserControllerTest {
                 .content(asJson(userDto))
                 .contentType(APPLICATION_JSON)).andExpect(status().isForbidden());
 
-        // bad request
+        // unprocessable entity
         final UserDto userDtoWithBadRequest = new UserDto("", "", "email", "");
         final MockHttpServletResponse responseWithBadRequest =
                 utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
                                 .content(asJson(userDtoWithBadRequest))
                                 .contentType(APPLICATION_JSON), TEST_USERNAME)
-                        .andExpect(status().isBadRequest())
+                        .andExpect(status().isUnprocessableEntity())
                         .andReturn()
                         .getResponse();
         assertThat(responseWithBadRequest.getContentAsString()).contains("Last name is required");
@@ -177,7 +176,6 @@ class UserControllerTest {
                 .contains("Your password needs to be between 8 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString()).contains("Please enter a valid email address");
 
-        // unprocessable entity
         utils.createDefaultUser();
         final Long userIdWithUnprocessableEntity = userRepository.findByEmail(TEST_USERNAME).get().getId();
         final UserDto userDtoWithUnprocessableEntity = new UserDto("new first name", "new last name",
