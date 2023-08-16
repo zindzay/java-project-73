@@ -1,4 +1,9 @@
+base-url: ""
+
 spring:
+  application:
+    name: taskManager
+
   jpa:
     show-sql: true
 

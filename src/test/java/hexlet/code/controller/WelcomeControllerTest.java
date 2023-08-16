@@ -19,7 +19,7 @@ class WelcomeControllerTest {
 
     @Test
     void testWelcome() throws Exception {
-        MockHttpServletResponse response = mockMvc
+        final MockHttpServletResponse response = mockMvc
                 .perform(get("/welcome"))
                 .andReturn()
                 .getResponse();
