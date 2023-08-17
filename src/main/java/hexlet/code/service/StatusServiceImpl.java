@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.StatusDto;
-import hexlet.code.exeptions.StatusNotFoundException;
+import hexlet.code.exeption.StatusNotFoundException;
 import hexlet.code.model.Status;
 import hexlet.code.repository.StatusRepository;
 import lombok.AllArgsConstructor;

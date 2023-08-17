@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.ErrorDto;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Task;
@@ -11,6 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.querydsl.binding.QuerydslPredicate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,8 +24,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -46,8 +46,8 @@ public class TaskController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping
-    public ResponseEntity<List<Task>> getAllTasks() {
-        return ResponseEntity.ok().body(taskService.findAllTasks());
+    public ResponseEntity<Iterable<Task>> getAllTasks(@QuerydslPredicate(root = Task.class) Predicate predicate) {
+        return ResponseEntity.ok().body(taskService.findAllTasks(predicate));
     }
 
     @Operation(summary = "Get task by id")

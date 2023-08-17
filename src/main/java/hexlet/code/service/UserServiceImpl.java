@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.UserDto;
-import hexlet.code.exeptions.UserNotFoundException;
+import hexlet.code.exeption.UserNotFoundException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.AllArgsConstructor;

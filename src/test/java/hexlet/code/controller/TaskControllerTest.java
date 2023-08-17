@@ -89,6 +89,22 @@ class TaskControllerTest {
         });
         assertThat(tasks).hasSize(1);
 
+        // get all with filter
+        final Long authorId = userRepository.findByEmail(TEST_USERNAME).get().getId();
+        final Long executorId = userRepository.findAll().get(0).getId();
+        final Long taskStatusId = statusRepository.findAll().get(0).getId();
+        final Long labelId = labelRepository.findAll().get(0).getId();
+        final String filter = String.format("?authorId=%d&taskStatus=%d&executorId=%d&labelsId=%d",
+                authorId, taskStatusId, executorId, labelId);
+        final MockHttpServletResponse responseWithFilter = utils
+                .perform(get(utils.getBaseUrl() + TASK_CONTROLLER_PATH + filter), TEST_USERNAME)
+                .andExpect(status().isOk())
+                .andReturn()
+                .getResponse();
+        final List<Task> tasksWithFilter = fromJson(responseWithFilter.getContentAsString(), new TypeReference<>() {
+        });
+        assertThat(tasksWithFilter).hasSize(1);
+
         // forbidden
         utils.perform(get(utils.getBaseUrl() + TASK_CONTROLLER_PATH)).andExpect(status().isForbidden());
     }

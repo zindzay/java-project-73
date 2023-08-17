@@ -1,7 +1,7 @@
 package hexlet.code.service;
 
 import hexlet.code.dto.LabelDto;
-import hexlet.code.exeptions.LabelNotFoundException;
+import hexlet.code.exeption.LabelNotFoundException;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
 import lombok.AllArgsConstructor;

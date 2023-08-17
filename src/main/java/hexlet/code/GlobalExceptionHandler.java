@@ -1,10 +1,10 @@
 package hexlet.code;
 
 import hexlet.code.dto.ErrorDto;
-import hexlet.code.exeptions.LabelNotFoundException;
-import hexlet.code.exeptions.StatusNotFoundException;
-import hexlet.code.exeptions.TaskNotFoundException;
-import hexlet.code.exeptions.UserNotFoundException;
+import hexlet.code.exeption.LabelNotFoundException;
+import hexlet.code.exeption.StatusNotFoundException;
+import hexlet.code.exeption.TaskNotFoundException;
+import hexlet.code.exeption.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
