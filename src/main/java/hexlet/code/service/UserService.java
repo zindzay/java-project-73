@@ -17,4 +17,8 @@ public interface UserService {
 
     void deleteUserById(long id);
 
+    String getCurrentUserName();
+
+    User getCurrentUser();
+
 }

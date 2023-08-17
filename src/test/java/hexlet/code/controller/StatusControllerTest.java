@@ -7,6 +7,7 @@ import hexlet.code.model.Status;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.utils.TestUtils;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,11 @@ class StatusControllerTest {
     @Autowired
     private TestUtils utils;
 
+    @BeforeEach
+    public void init() throws Exception {
+        utils.createDefaultUser();
+    }
+
     @AfterEach
     public void clear() {
         utils.tearDown();
@@ -54,6 +60,7 @@ class StatusControllerTest {
 
     @Test
     void getAllStatusesTest() throws Exception {
+        // get all statuses
         utils.createDefaultStatus();
         final MockHttpServletResponse response = utils
                 .perform(get(utils.getBaseUrl() + STATUS_CONTROLLER_PATH), TEST_USERNAME)
@@ -63,6 +70,9 @@ class StatusControllerTest {
         final List<Status> statuses = fromJson(response.getContentAsString(), new TypeReference<>() {
         });
         assertThat(statuses).hasSize(1);
+
+        // forbidden
+        utils.perform(get(utils.getBaseUrl() + STATUS_CONTROLLER_PATH)).andExpect(status().isForbidden());
     }
 
     @Test
@@ -89,6 +99,10 @@ class StatusControllerTest {
         utils.perform(get(utils.getBaseUrl() + STATUS_CONTROLLER_PATH + ID,
                         "error"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
+
+        // forbidden
+        utils.perform(get(utils.getBaseUrl() + STATUS_CONTROLLER_PATH + ID, expectedStatus.getId()))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -110,6 +124,11 @@ class StatusControllerTest {
         assertThat(responseWithUnprocessableEntity.getContentAsString())
                 .contains("Status name needs to be between 1 and 30 characters long");
         assertEquals(1, statusRepository.count());
+
+        //forbidden
+        utils.perform(post(utils.getBaseUrl() + STATUS_CONTROLLER_PATH)
+                        .content(asJson(utils.getTestStatusDto())).contentType(APPLICATION_JSON))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -147,6 +166,7 @@ class StatusControllerTest {
     void deleteStatusTest() throws Exception {
         // deleted
         utils.createDefaultStatus();
+        assertEquals(1, statusRepository.count());
         final Long statusId = statusRepository.findAll().get(0).getId();
         utils.perform(delete(utils.getBaseUrl() + STATUS_CONTROLLER_PATH + ID, statusId), TEST_USERNAME)
                 .andExpect(status().isOk());
@@ -160,11 +180,10 @@ class StatusControllerTest {
         assertEquals(1, statusRepository.count());
 
         // unprocessable entity
-        utils.createDefaultStatus();
         utils.perform(delete(utils.getBaseUrl() + STATUS_CONTROLLER_PATH + ID,
-                        "statusId"), TEST_USERNAME)
+                        "id"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
-        assertEquals(2, statusRepository.count());
+        assertEquals(1, statusRepository.count());
     }
 
 }

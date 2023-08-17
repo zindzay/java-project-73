@@ -5,6 +5,7 @@ import hexlet.code.exeptions.UserNotFoundException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +34,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(final UserDto userDto) {
-        final User user = new User();
-        user.setEmail(userDto.email());
-        user.setFirstName(userDto.firstName());
-        user.setLastName(userDto.lastName());
-        user.setPassword(passwordEncoder.encode(userDto.password()));
+        final User user = User.builder()
+                .email(userDto.email())
+                .firstName(userDto.firstName())
+                .lastName(userDto.lastName())
+                .password(passwordEncoder.encode(userDto.password()))
+                .build();
 
         return userRepository.save(user);
     }
@@ -57,6 +59,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(final long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public String getCurrentUserName() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    @Override
+    public User getCurrentUser() {
+        final String currentUserName = getCurrentUserName();
+        return userRepository.findByEmail(currentUserName)
+                .orElseThrow(() -> new UserNotFoundException(
+                        String.format("Not found user with 'email': %s", currentUserName)));
     }
 
 }

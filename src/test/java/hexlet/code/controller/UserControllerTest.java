@@ -97,6 +97,10 @@ class UserControllerTest {
         utils.perform(get(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID,
                         "error"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
+
+        // forbidden
+        utils.perform(get(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, expectedUser.getId()))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -189,6 +193,7 @@ class UserControllerTest {
     void deleteUserTest() throws Exception {
         // deleted
         utils.createDefaultUser();
+        assertEquals(1, userRepository.count());
         final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
         utils.perform(delete(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId), TEST_USERNAME)
                 .andExpect(status().isOk());
@@ -207,11 +212,10 @@ class UserControllerTest {
         assertEquals(1, userRepository.count());
 
         // unprocessable entity
-        utils.createDefaultUser();
         utils.perform(delete(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID,
-                        "userId"), TEST_USERNAME)
+                        "id"), TEST_USERNAME)
                 .andExpect(status().isUnprocessableEntity());
-        assertEquals(2, userRepository.count());
+        assertEquals(1, userRepository.count());
     }
 
     @Test

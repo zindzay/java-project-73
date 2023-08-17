@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.ErrorDto;
-import hexlet.code.dto.UserDto;
-import hexlet.code.model.User;
-import hexlet.code.service.UserService;
+import hexlet.code.dto.TaskDto;
+import hexlet.code.model.Task;
+import hexlet.code.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -27,29 +27,30 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("${base-url}" + UserController.USER_CONTROLLER_PATH)
-public class UserController {
+@RequestMapping("${base-url}" + TaskController.TASK_CONTROLLER_PATH)
+public class TaskController {
 
-    public static final String USER_CONTROLLER_PATH = "/users";
+    public static final String TASK_CONTROLLER_PATH = "/tasks";
     public static final String ID = "/{id}";
-    private static final String ONLY_OWNER_BY_ID = """
-                @userRepository.findById(#id).get().getEmail() == authentication.getName()
+
+    private static final String ONLY_TASK_OWNER_BY_ID = """
+                @taskRepository.findById(#id).get().getAuthor().getEmail() == authentication.getName()
             """;
 
-    private final UserService userService;
+    private final TaskService taskService;
 
-    @Operation(summary = "Get all users")
+    @Operation(summary = "Get all tasks")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping
-    public ResponseEntity<List<User>> getAllUsers() {
-        return ResponseEntity.ok().body(userService.findAllUsers());
+    public ResponseEntity<List<Task>> getAllTasks() {
+        return ResponseEntity.ok().body(taskService.findAllTasks());
     }
 
-    @Operation(summary = "Get user by id")
+    @Operation(summary = "Get task by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -59,25 +60,26 @@ public class UserController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping(ID)
-    public ResponseEntity<User> getUserById(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(userService.findUserById(id));
+    public ResponseEntity<Task> getTaskById(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(taskService.findTaskById(id));
     }
 
-    @Operation(summary = "Create new user")
+    @Operation(summary = "Create new task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PostMapping
-    public ResponseEntity<User> createUser(@RequestBody @Valid final UserDto dto) {
-        final User user = userService.createUser(dto);
+    public ResponseEntity<Task> createTask(@RequestBody @Valid final TaskDto dto) {
+        final Task task = taskService.createTask(dto);
         return ResponseEntity
-                .created(ServletUriComponentsBuilder.fromCurrentRequest().path(ID).buildAndExpand(user.getId()).toUri())
-                .body(user);
+                .created(ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path(ID).buildAndExpand(task.getId()).toUri())
+                .body(task);
     }
 
-    @Operation(summary = "Update user by id")
+    @Operation(summary = "Update task by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -86,14 +88,13 @@ public class UserController {
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
-    @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
-    public ResponseEntity<User> updateUserById(@PathVariable final long id,
-                                               @RequestBody @Valid final UserDto dto) {
-        return ResponseEntity.ok().body(userService.updateUserById(id, dto));
+    public ResponseEntity<Task> updateTaskById(@PathVariable final long id,
+                                               @RequestBody @Valid final TaskDto dto) {
+        return ResponseEntity.ok().body(taskService.updateTaskById(id, dto));
     }
 
-    @Operation(summary = "Delete user by id")
+    @Operation(summary = "Delete task by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -102,10 +103,10 @@ public class UserController {
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
-    @PreAuthorize(ONLY_OWNER_BY_ID)
+    @PreAuthorize(ONLY_TASK_OWNER_BY_ID)
     @DeleteMapping(ID)
-    public void deleteUserById(@PathVariable final long id) {
-        userService.deleteUserById(id);
+    public void deleteTaskById(@PathVariable final long id) {
+        taskService.deleteTaskById(id);
     }
 
 }

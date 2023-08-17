@@ -2,6 +2,7 @@ package hexlet.code;
 
 import hexlet.code.dto.ErrorDto;
 import hexlet.code.exeptions.StatusNotFoundException;
+import hexlet.code.exeptions.TaskNotFoundException;
 import hexlet.code.exeptions.UserNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class})
+    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class, TaskNotFoundException.class})
     public ResponseEntity<ErrorDto> handleNotFoundException(final RuntimeException exception) {
         final List<String> errors = List.of(exception.getMessage());
 

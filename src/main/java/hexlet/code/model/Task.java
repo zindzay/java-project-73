@@ -1,12 +1,10 @@
 package hexlet.code.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import lombok.AllArgsConstructor;
@@ -17,7 +15,6 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.TemporalType.TIMESTAMP;
@@ -26,38 +23,35 @@ import static jakarta.persistence.TemporalType.TIMESTAMP;
 @Entity
 @Getter
 @Setter
-@Table(name = "users")
+@Table(name = "tasks")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class Task {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private String firstName;
+    private String name;
 
-    private String lastName;
+    @Lob
+    private String description;
 
-    @Column(unique = true)
-    private String email;
+    @ManyToOne
+    private Status taskStatus;
 
-    @JsonIgnore
-    private String password;
+    @ManyToOne
+    private User author;
 
-    @JsonIgnore
-    @OneToMany(
-            cascade = CascadeType.ALL,
-            mappedBy = "author"
-    )
-    private List<Task> tasks;
+    @ManyToOne
+    private User executor;
 
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
 
-    public User(final Long id) {
+    public Task(final Long id) {
         this.id = id;
     }
 

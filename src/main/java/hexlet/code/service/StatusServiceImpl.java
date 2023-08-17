@@ -31,8 +31,9 @@ public class StatusServiceImpl implements StatusService {
 
     @Override
     public Status createStatus(final StatusDto statusDto) {
-        final Status status = new Status();
-        status.setName(statusDto.name());
+        final Status status = Status.builder()
+                .name(statusDto.name())
+                .build();
 
         return statusRepository.save(status);
     }

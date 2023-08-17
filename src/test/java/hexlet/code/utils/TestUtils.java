@@ -7,6 +7,7 @@ import hexlet.code.component.JWTHelper;
 import hexlet.code.dto.StatusDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.repository.StatusRepository;
+import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -33,7 +34,6 @@ public class TestUtils {
             TEST_USERNAME,
             "password"
     );
-
     private final StatusDto testStatusDto = new StatusDto("testStatus");
     private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 
@@ -41,15 +41,17 @@ public class TestUtils {
     private final MockMvc mockMvc;
     private final UserRepository userRepository;
     private StatusRepository statusRepository;
+    private TaskRepository taskRepository;
     private final JWTHelper jwtHelper;
 
     public TestUtils(@Value("${base-url}") final String baseUrl, final MockMvc mockMvc,
                      final UserRepository userRepository, final StatusRepository statusRepository,
-                     final JWTHelper jwtHelper) {
+                     final TaskRepository taskRepository, final JWTHelper jwtHelper) {
         this.baseUrl = baseUrl;
         this.mockMvc = mockMvc;
         this.userRepository = userRepository;
         this.statusRepository = statusRepository;
+        this.taskRepository = taskRepository;
         this.jwtHelper = jwtHelper;
     }
 
@@ -106,8 +108,6 @@ public class TestUtils {
     }
 
     public ResultActions createStatus(final StatusDto dto) throws Exception {
-        createDefaultUser();
-
         final MockHttpServletRequestBuilder request = post(baseUrl + STATUS_CONTROLLER_PATH)
                 .content(asJson(dto))
                 .contentType(APPLICATION_JSON);
