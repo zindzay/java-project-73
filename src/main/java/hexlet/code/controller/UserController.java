@@ -1,5 +1,6 @@
 package hexlet.code.controller;
 
+import com.rollbar.notifier.Rollbar;
 import hexlet.code.dto.ErrorDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
@@ -37,6 +38,7 @@ public class UserController {
             """;
 
     private final UserService userService;
+    private final Rollbar rollbar;
 
     @Operation(summary = "Get all users")
     @ApiResponses(value = {
@@ -46,6 +48,7 @@ public class UserController {
     })
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
+        rollbar.debug("Get all users");
         return ResponseEntity.ok().body(userService.findAllUsers());
     }
 

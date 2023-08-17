@@ -145,8 +145,15 @@ class UserControllerTest {
         assertTrue(userRepository.existsById(userId));
         assertNull(userRepository.findByEmail(TEST_USERNAME).orElse(null));
         assertNotNull(userRepository.findByEmail(TEST_USERNAME_2).orElse(null));
+    }
 
+    @Test
+    void updateUserForbiddenTest() throws Exception {
         // forbidden
+        utils.createDefaultUser();
+        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
+        final UserDto userDto = new UserDto("new first name", "new last name",
+                TEST_USERNAME_2, "new password");
         final String forbiddenUserName = "test@test.test";
         final UserDto forbiddenUserDto = new UserDto("firstName",
                 "lastName",
@@ -160,8 +167,12 @@ class UserControllerTest {
         utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
                 .content(asJson(userDto))
                 .contentType(APPLICATION_JSON)).andExpect(status().isForbidden());
+    }
 
-        // unprocessable entity
+    @Test
+    void updateUserUnprocessableEntityTest() throws Exception {
+        utils.createDefaultUser();
+        final Long userId = userRepository.findByEmail(TEST_USERNAME).get().getId();
         final UserDto userDtoWithBadRequest = new UserDto("", "", "email", "");
         final MockHttpServletResponse responseWithBadRequest =
                 utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userId)
@@ -179,14 +190,6 @@ class UserControllerTest {
         assertThat(responseWithBadRequest.getContentAsString())
                 .contains("Your password needs to be between 3 and 30 characters long");
         assertThat(responseWithBadRequest.getContentAsString()).contains("Please enter a valid email address");
-
-        utils.createDefaultUser();
-        final Long userIdWithUnprocessableEntity = userRepository.findByEmail(TEST_USERNAME).get().getId();
-        final UserDto userDtoWithUnprocessableEntity = new UserDto("new first name", "new last name",
-                TEST_USERNAME_2, "new password");
-        utils.perform(put(utils.getBaseUrl() + USER_CONTROLLER_PATH + ID, userIdWithUnprocessableEntity)
-                .content(asJson(userDtoWithUnprocessableEntity))
-                .contentType(APPLICATION_JSON), TEST_USERNAME).andExpect(status().isUnprocessableEntity());
     }
 
     @Test

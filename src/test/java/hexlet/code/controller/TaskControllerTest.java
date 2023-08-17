@@ -192,6 +192,17 @@ class TaskControllerTest {
         assertEquals(taskDto.taskStatusId(), taskRepository.findById(taskId).get().getTaskStatus().getId());
         assertTrue(taskDto.labelIds().isEmpty());
         assertEquals(taskDto.executorId(), taskRepository.findById(taskId).get().getExecutor().getId());
+    }
+
+    @Test
+    void updateTaskErrorTest() throws Exception {
+        createDefaultTask();
+        final Long taskId = taskRepository.findAll().get(0).getId();
+        final Long executorId = userRepository.findAll().get(0).getId();
+        utils.createDefaultStatus();
+        final Long newTaskStatusId = statusRepository.findAll().get(1).getId();
+        final TaskDto taskDto = new TaskDto("new name", "new description", newTaskStatusId,
+                null, executorId);
 
         // forbidden
         utils.perform(put(utils.getBaseUrl() + TASK_CONTROLLER_PATH + ID, taskId)
