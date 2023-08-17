@@ -41,9 +41,9 @@ public class TaskController {
 
     @Operation(summary = "Get all tasks")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping
     public ResponseEntity<Iterable<Task>> getAllTasks(@QuerydslPredicate(root = Task.class) Predicate predicate) {
@@ -52,12 +52,12 @@ public class TaskController {
 
     @Operation(summary = "Get task by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping(ID)
     public ResponseEntity<Task> getTaskById(@PathVariable final Long id) {
@@ -66,9 +66,9 @@ public class TaskController {
 
     @Operation(summary = "Create new task")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201"),
-            @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "201"),
+        @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PostMapping
     public ResponseEntity<Task> createTask(@RequestBody @Valid final TaskDto dto) {
@@ -81,12 +81,12 @@ public class TaskController {
 
     @Operation(summary = "Update task by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PutMapping(ID)
     public ResponseEntity<Task> updateTaskById(@PathVariable final long id,
@@ -96,12 +96,12 @@ public class TaskController {
 
     @Operation(summary = "Delete task by id")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200"),
-            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-            @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-            @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "200"),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PreAuthorize(ONLY_TASK_OWNER_BY_ID)
     @DeleteMapping(ID)

@@ -20,7 +20,7 @@ import java.util.List;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class,
-            TaskNotFoundException.class, LabelNotFoundException.class})
+        TaskNotFoundException.class, LabelNotFoundException.class})
     public ResponseEntity<ErrorDto> handleNotFoundException(final RuntimeException exception) {
         final List<String> errors = List.of(exception.getMessage());
 
