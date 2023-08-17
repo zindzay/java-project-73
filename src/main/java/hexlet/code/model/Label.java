@@ -1,12 +1,8 @@
 package hexlet.code.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.persistence.Lob;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import lombok.AllArgsConstructor;
@@ -17,20 +13,18 @@ import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.Date;
-import java.util.Set;
 
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static jakarta.persistence.TemporalType.TIMESTAMP;
 
-
 @Entity
 @Getter
 @Setter
-@Table(name = "tasks")
+@Table(name = "labels")
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Task {
+public class Label {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -38,27 +32,8 @@ public class Task {
 
     private String name;
 
-    @Lob
-    private String description;
-
-    @ManyToOne
-    private Status taskStatus;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Label> labels;
-
-    @ManyToOne
-    private User author;
-
-    @ManyToOne
-    private User executor;
-
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
-
-    public Task(final Long id) {
-        this.id = id;
-    }
 
 }

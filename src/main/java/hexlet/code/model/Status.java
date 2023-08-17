@@ -35,4 +35,5 @@ public class Status {
     @CreationTimestamp
     @Temporal(TIMESTAMP)
     private Date createdAt;
+
 }

@@ -2,6 +2,7 @@ package hexlet.code.service;
 
 import hexlet.code.dto.TaskDto;
 import hexlet.code.exeptions.TaskNotFoundException;
+import hexlet.code.model.Label;
 import hexlet.code.model.Status;
 import hexlet.code.model.Task;
 import hexlet.code.model.User;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -23,6 +25,8 @@ public class TaskServiceImpl implements TaskService {
 
     private final StatusService statusService;
 
+    private final LabelService labelService;
+
 
     @Override
     public List<Task> findAllTasks() {
@@ -30,19 +34,19 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task findTaskById(long id) {
+    public Task findTaskById(final long id) {
         return taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(String.format("Not found task with 'id': %d", id)));
     }
 
     @Override
-    public Task createTask(TaskDto taskDto) {
+    public Task createTask(final TaskDto taskDto) {
         final Task task = fromDto(taskDto);
         return taskRepository.save(task);
     }
 
     @Override
-    public Task updateTaskById(long id, TaskDto taskDto) {
+    public Task updateTaskById(final long id, final TaskDto taskDto) {
         final Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new TaskNotFoundException(String.format("Not found task with 'id': %d", id)));
         merge(task, taskDto);
@@ -50,7 +54,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public void deleteTaskById(long id) {
+    public void deleteTaskById(final long id) {
         taskRepository.deleteById(id);
     }
 
@@ -59,6 +63,7 @@ public class TaskServiceImpl implements TaskService {
         task.setName(newTask.getName());
         task.setDescription(newTask.getDescription());
         task.setTaskStatus(newTask.getTaskStatus());
+        task.setLabels(newTask.getLabels());
         task.setExecutor(newTask.getExecutor());
     }
 
@@ -75,6 +80,11 @@ public class TaskServiceImpl implements TaskService {
         if (dto.executorId() != null) {
             final User executor = userService.findUserById(dto.executorId());
             taskBuilder.executor(executor);
+        }
+
+        if (!dto.labelIds().isEmpty()) {
+            final List<Label> labels = labelService.findAllLabelById(dto.labelIds());
+            taskBuilder.labels(new HashSet<>(labels));
         }
 
         return taskBuilder.build();

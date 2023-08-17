@@ -1,6 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.dto.ErrorDto;
+import hexlet.code.exeptions.LabelNotFoundException;
 import hexlet.code.exeptions.StatusNotFoundException;
 import hexlet.code.exeptions.TaskNotFoundException;
 import hexlet.code.exeptions.UserNotFoundException;
@@ -18,7 +19,8 @@ import java.util.List;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class, TaskNotFoundException.class})
+    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class,
+            TaskNotFoundException.class, LabelNotFoundException.class})
     public ResponseEntity<ErrorDto> handleNotFoundException(final RuntimeException exception) {
         final List<String> errors = List.of(exception.getMessage());
 

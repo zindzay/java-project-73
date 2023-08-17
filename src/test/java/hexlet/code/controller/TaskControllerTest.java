@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import hexlet.code.config.TestConfig;
 import hexlet.code.dto.TaskDto;
 import hexlet.code.model.Task;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
 import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
@@ -57,12 +58,16 @@ class TaskControllerTest {
     private StatusRepository statusRepository;
 
     @Autowired
+    private LabelRepository labelRepository;
+
+    @Autowired
     private TestUtils utils;
 
     @BeforeEach
     public void init() throws Exception {
         utils.createDefaultUser();
         utils.createDefaultStatus();
+        utils.createDefaultLabel();
     }
 
     @AfterEach
@@ -104,6 +109,8 @@ class TaskControllerTest {
         });
         assertEquals(expectedTask.getId(), status.getId());
         assertEquals(expectedTask.getName(), status.getName());
+        assertEquals(expectedTask.getLabels().stream().toList().get(0).getId(),
+                status.getLabels().stream().toList().get(0).getId());
         assertEquals(expectedTask.getDescription(), status.getDescription());
         assertEquals(expectedTask.getExecutor().getId(), status.getExecutor().getId());
         assertEquals(expectedTask.getAuthor().getId(), authorId);
@@ -129,7 +136,7 @@ class TaskControllerTest {
         createDefaultTask().andExpect(status().isCreated());
 
         // unprocessable entity
-        final TaskDto taskDtoWithBadRequest = new TaskDto("", "", null, null);
+        final TaskDto taskDtoWithBadRequest = new TaskDto("", "", null, null, null);
         final MockHttpServletResponse responseWithBadRequest = utils
                 .perform(post(utils.getBaseUrl() + TASK_CONTROLLER_PATH)
                         .content(asJson(taskDtoWithBadRequest))
@@ -158,7 +165,8 @@ class TaskControllerTest {
         final Long executorId = userRepository.findAll().get(0).getId();
         utils.createDefaultStatus();
         final Long newTaskStatusId = statusRepository.findAll().get(1).getId();
-        final TaskDto taskDto = new TaskDto("new name", "new description", newTaskStatusId, executorId);
+        final TaskDto taskDto = new TaskDto("new name", "new description", newTaskStatusId,
+                null, executorId);
         utils.perform(put(utils.getBaseUrl() + TASK_CONTROLLER_PATH + ID, taskId)
                 .content(asJson(taskDto))
                 .contentType(APPLICATION_JSON), TEST_USERNAME).andExpect(status().isOk());
@@ -166,6 +174,7 @@ class TaskControllerTest {
         assertEquals(taskDto.name(), taskRepository.findById(taskId).get().getName());
         assertEquals(taskDto.description(), taskRepository.findById(taskId).get().getDescription());
         assertEquals(taskDto.taskStatusId(), taskRepository.findById(taskId).get().getTaskStatus().getId());
+        assertTrue(taskDto.labelIds().isEmpty());
         assertEquals(taskDto.executorId(), taskRepository.findById(taskId).get().getExecutor().getId());
 
         // forbidden
@@ -174,7 +183,7 @@ class TaskControllerTest {
                 .contentType(APPLICATION_JSON)).andExpect(status().isForbidden());
 
         // unprocessable entity
-        final TaskDto taskDtoWithBadRequest = new TaskDto("", "", null, null);
+        final TaskDto taskDtoWithBadRequest = new TaskDto("", "", null, null, null);
         final MockHttpServletResponse responseWithBadRequest =
                 utils.perform(put(utils.getBaseUrl() + TASK_CONTROLLER_PATH + ID, taskId)
                                 .content(asJson(taskDtoWithBadRequest))
@@ -215,7 +224,9 @@ class TaskControllerTest {
     private ResultActions createDefaultTask() throws Exception {
         final Long executorId = userRepository.findAll().get(0).getId();
         final Long taskStatusId = statusRepository.findAll().get(0).getId();
-        final TaskDto taskDto = new TaskDto("name", "description", taskStatusId, executorId);
+        final Long labelId = labelRepository.findAll().get(0).getId();
+        final TaskDto taskDto = new TaskDto("name", "description", taskStatusId,
+                List.of(labelId), executorId);
         final MockHttpServletRequestBuilder request = post(utils.getBaseUrl() + TASK_CONTROLLER_PATH)
                 .content(TestUtils.asJson(taskDto))
                 .contentType(APPLICATION_JSON);

@@ -4,10 +4,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import hexlet.code.component.JWTHelper;
+import hexlet.code.dto.LabelDto;
 import hexlet.code.dto.StatusDto;
 import hexlet.code.dto.UserDto;
+import hexlet.code.repository.LabelRepository;
 import hexlet.code.repository.StatusRepository;
-import hexlet.code.repository.TaskRepository;
 import hexlet.code.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -17,6 +18,7 @@ import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilde
 
 import java.util.Map;
 
+import static hexlet.code.controller.LabelController.LABEL_CONTROLLER_PATH;
 import static hexlet.code.controller.StatusController.STATUS_CONTROLLER_PATH;
 import static hexlet.code.controller.UserController.USER_CONTROLLER_PATH;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -35,23 +37,24 @@ public class TestUtils {
             "password"
     );
     private final StatusDto testStatusDto = new StatusDto("testStatus");
+    private final LabelDto testLabelDto = new LabelDto("testLabel");
     private static final ObjectMapper MAPPER = new ObjectMapper().findAndRegisterModules();
 
     private final String baseUrl;
     private final MockMvc mockMvc;
     private final UserRepository userRepository;
-    private StatusRepository statusRepository;
-    private TaskRepository taskRepository;
+    private final StatusRepository statusRepository;
+    private final LabelRepository labelRepository;
     private final JWTHelper jwtHelper;
 
     public TestUtils(@Value("${base-url}") final String baseUrl, final MockMvc mockMvc,
                      final UserRepository userRepository, final StatusRepository statusRepository,
-                     final TaskRepository taskRepository, final JWTHelper jwtHelper) {
+                     final LabelRepository labelRepository, final JWTHelper jwtHelper) {
         this.baseUrl = baseUrl;
         this.mockMvc = mockMvc;
         this.userRepository = userRepository;
         this.statusRepository = statusRepository;
-        this.taskRepository = taskRepository;
+        this.labelRepository = labelRepository;
         this.jwtHelper = jwtHelper;
     }
 
@@ -63,6 +66,10 @@ public class TestUtils {
         return testStatusDto;
     }
 
+    public LabelDto getTestLabelDto() {
+        return testLabelDto;
+    }
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -70,6 +77,7 @@ public class TestUtils {
     public void tearDown() {
         userRepository.deleteAll();
         statusRepository.deleteAll();
+        labelRepository.deleteAll();
     }
 
     public ResultActions createDefaultUser() throws Exception {
@@ -114,4 +122,17 @@ public class TestUtils {
 
         return perform(request, TEST_USERNAME);
     }
+
+    public ResultActions createDefaultLabel() throws Exception {
+        return createLabel(testLabelDto);
+    }
+
+    public ResultActions createLabel(final LabelDto dto) throws Exception {
+        final MockHttpServletRequestBuilder request = post(baseUrl + LABEL_CONTROLLER_PATH)
+                .content(asJson(dto))
+                .contentType(APPLICATION_JSON);
+
+        return perform(request, TEST_USERNAME);
+    }
+
 }

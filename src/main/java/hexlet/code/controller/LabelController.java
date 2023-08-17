@@ -1,9 +1,9 @@
 package hexlet.code.controller;
 
 import hexlet.code.dto.ErrorDto;
-import hexlet.code.dto.StatusDto;
-import hexlet.code.model.Status;
-import hexlet.code.service.StatusService;
+import hexlet.code.dto.LabelDto;
+import hexlet.code.model.Label;
+import hexlet.code.service.LabelService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,26 +26,26 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("${base-url}" + StatusController.STATUS_CONTROLLER_PATH)
-public class StatusController {
+@RequestMapping("${base-url}" + LabelController.LABEL_CONTROLLER_PATH)
+public class LabelController {
 
-    public static final String STATUS_CONTROLLER_PATH = "/statuses";
+    public static final String LABEL_CONTROLLER_PATH = "/labels";
     public static final String ID = "/{id}";
 
-    private final StatusService statusService;
+    private final LabelService labelService;
 
-    @Operation(summary = "Get all statuses")
+    @Operation(summary = "Get all labels")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping
-    public ResponseEntity<List<Status>> getAllStatuses() {
-        return ResponseEntity.ok().body(statusService.findAllStatuses());
+    public ResponseEntity<List<Label>> getAllLabels() {
+        return ResponseEntity.ok().body(labelService.findAllLabels());
     }
 
-    @Operation(summary = "Get status by id")
+    @Operation(summary = "Get label by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -55,26 +55,26 @@ public class StatusController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @GetMapping(ID)
-    public ResponseEntity<Status> getStatusById(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(statusService.findStatusById(id));
+    public ResponseEntity<Label> getLabelById(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(labelService.findLabelById(id));
     }
 
-    @Operation(summary = "Create new status")
+    @Operation(summary = "Create new label")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201"),
             @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PostMapping
-    public ResponseEntity<Status> createStatus(@RequestBody @Valid final StatusDto dto) {
-        final Status status = statusService.createStatus(dto);
+    public ResponseEntity<Label> createLabel(@RequestBody @Valid final LabelDto dto) {
+        final Label label = labelService.createLabel(dto);
         return ResponseEntity
                 .created(ServletUriComponentsBuilder.fromCurrentRequest()
-                        .path(ID).buildAndExpand(status.getId()).toUri())
-                .body(status);
+                        .path(ID).buildAndExpand(label.getId()).toUri())
+                .body(label);
     }
 
-    @Operation(summary = "Update status by id")
+    @Operation(summary = "Update label by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -84,12 +84,12 @@ public class StatusController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @PutMapping(ID)
-    public ResponseEntity<Status> updateStatusById(@PathVariable final long id,
-                                                 @RequestBody @Valid final StatusDto dto) {
-        return ResponseEntity.ok().body(statusService.updateStatusById(id, dto));
+    public ResponseEntity<Label> updateLabelById(@PathVariable final long id,
+                                                 @RequestBody @Valid final LabelDto dto) {
+        return ResponseEntity.ok().body(labelService.updateLabelById(id, dto));
     }
 
-    @Operation(summary = "Delete status by id")
+    @Operation(summary = "Delete label by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200"),
             @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
@@ -99,8 +99,8 @@ public class StatusController {
             @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
     })
     @DeleteMapping(ID)
-    public void deleteStatusById(@PathVariable final long id) {
-        statusService.deleteStatusById(id);
+    public void deleteLabelById(@PathVariable final long id) {
+        labelService.deleteLabelById(id);
     }
 
 }
