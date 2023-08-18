@@ -1,7 +1,6 @@
 package hexlet.code;
 
 import com.rollbar.notifier.Rollbar;
-import hexlet.code.dto.ErrorDto;
 import hexlet.code.exeption.LabelNotFoundException;
 import hexlet.code.exeption.StatusNotFoundException;
 import hexlet.code.exeption.TaskNotFoundException;
@@ -26,24 +25,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class,
         TaskNotFoundException.class, LabelNotFoundException.class})
-    public ResponseEntity<ErrorDto> handleNotFoundException(final RuntimeException exception) {
-        final List<String> errors = List.of(exception.getMessage());
+    public ResponseEntity<String> handleNotFoundException(final RuntimeException exception) {
         rollbar.error(exception.getMessage());
-        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)
-    public final ResponseEntity<ErrorDto> handleGeneralExceptions(final Exception exception) {
-        final List<String> errors = List.of(exception.getMessage());
+    public final ResponseEntity<String> handleGeneralExceptions(final Exception exception) {
         rollbar.error(exception.getMessage());
-        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public final ResponseEntity<ErrorDto> handleRuntimeExceptions(final RuntimeException exception) {
-        final List<String> errors = List.of(exception.getMessage());
+    public final ResponseEntity<String> handleRuntimeExceptions(final RuntimeException exception) {
         rollbar.error(exception.getMessage());
-        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -53,10 +49,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(AccessDeniedException.class)
-    public final ResponseEntity<ErrorDto> handleAccessDeniedException(final AccessDeniedException exception) {
-        final List<String> errors = List.of(exception.getMessage());
+    public final ResponseEntity<String> handleAccessDeniedException(final AccessDeniedException exception) {
         rollbar.error(exception.getMessage());
-        return new ResponseEntity<>(new ErrorDto(errors), new HttpHeaders(), HttpStatus.FORBIDDEN);
+        return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.FORBIDDEN);
     }
 
 }

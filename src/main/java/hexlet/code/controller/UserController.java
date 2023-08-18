@@ -1,7 +1,6 @@
 package hexlet.code.controller;
 
 import com.rollbar.notifier.Rollbar;
-import hexlet.code.dto.ErrorDto;
 import hexlet.code.dto.UserDto;
 import hexlet.code.model.User;
 import hexlet.code.service.UserService;
@@ -44,7 +43,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
@@ -55,11 +54,11 @@ public class UserController {
     @Operation(summary = "Get user by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @GetMapping(ID)
     public ResponseEntity<User> getUserById(@PathVariable final Long id) {
@@ -70,7 +69,7 @@ public class UserController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201"),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody @Valid final UserDto dto) {
@@ -83,11 +82,11 @@ public class UserController {
     @Operation(summary = "Update user by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     @PutMapping(ID)
@@ -99,11 +98,11 @@ public class UserController {
     @Operation(summary = "Delete user by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @PreAuthorize(ONLY_OWNER_BY_ID)
     @DeleteMapping(ID)

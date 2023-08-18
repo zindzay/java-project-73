@@ -1,6 +1,5 @@
 package hexlet.code.controller;
 
-import hexlet.code.dto.ErrorDto;
 import hexlet.code.dto.StatusDto;
 import hexlet.code.model.Status;
 import hexlet.code.service.StatusService;
@@ -38,7 +37,7 @@ public class StatusController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @GetMapping
     public ResponseEntity<List<Status>> getAllStatuses() {
@@ -48,11 +47,11 @@ public class StatusController {
     @Operation(summary = "Get status by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @GetMapping(ID)
     public ResponseEntity<Status> getStatusById(@PathVariable final Long id) {
@@ -63,7 +62,7 @@ public class StatusController {
     @ApiResponses(value = {
         @ApiResponse(responseCode = "201"),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @PostMapping
     public ResponseEntity<Status> createStatus(@RequestBody @Valid final StatusDto dto) {
@@ -77,11 +76,11 @@ public class StatusController {
     @Operation(summary = "Update status by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @PutMapping(ID)
     public ResponseEntity<Status> updateStatusById(@PathVariable final long id,
@@ -92,11 +91,11 @@ public class StatusController {
     @Operation(summary = "Delete status by id")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200"),
-        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
-        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = String.class))),
+        @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = String.class))),
         @ApiResponse(responseCode = "422", content = @Content(schema = @Schema(implementation = String.class))),
-        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = ErrorDto.class))),
+        @ApiResponse(responseCode = "500", content = @Content(schema = @Schema(implementation = String.class))),
     })
     @DeleteMapping(ID)
     public void deleteStatusById(@PathVariable final long id) {
