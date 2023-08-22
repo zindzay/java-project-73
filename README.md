@@ -3,9 +3,9 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/823424c09887881f1081/maintainability)](https://codeclimate.com/github/zindzay/java-project-73/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/823424c09887881f1081/test_coverage)](https://codeclimate.com/github/zindzay/java-project-73/test_coverage)
 
-<a href="https://java-project-73-production-b201.up.railway.app/welcome" target="_blank">Менеджер задач</a>
+<a href="https://task-manager-8k10.onrender.com/users" target="_blank">Менеджер задач</a>
 
-<a href="https://java-project-73-production-b201.up.railway.app/swagger-ui/index.html#/" target="_blank">Swagger</a>
+<a href="https://task-manager-8k10.onrender.com/swagger-ui/index.html#/" target="_blank">Swagger</a>
 
 Task Manager – система управления задачами, подобная <a href="http://www.redmine.org/" target="_blank">http://www.redmine.org/</a>. 
 Она позволяет ставить задачи, назначать исполнителей и менять их статусы. Для работы с системой требуется регистрация и аутентификация.
