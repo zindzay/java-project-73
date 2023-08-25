@@ -1,9 +1,10 @@
-package hexlet.code.service;
+package hexlet.code.service.impl;
 
 import hexlet.code.dto.UserDto;
-import hexlet.code.exeption.UserNotFoundException;
+import hexlet.code.exeption.NotFoundServiceException;
 import hexlet.code.model.User;
 import hexlet.code.repository.UserRepository;
+import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +30,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserById(final long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.format("Not found user with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found user with 'id': %d", id)));
     }
 
     @Override
@@ -47,7 +48,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUserById(final long id, final UserDto userDto) {
         final User userToUpdate = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException(String.format("Not found user with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found user with 'id': %d", id)));
         userToUpdate.setEmail(userDto.email());
         userToUpdate.setFirstName(userDto.firstName());
         userToUpdate.setLastName(userDto.lastName());
@@ -70,7 +71,7 @@ public class UserServiceImpl implements UserService {
     public User getCurrentUser() {
         final String currentUserName = getCurrentUserName();
         return userRepository.findByEmail(currentUserName)
-                .orElseThrow(() -> new UserNotFoundException(
+                .orElseThrow(() -> new NotFoundServiceException(
                         String.format("Not found user with 'email': %s", currentUserName)));
     }
 

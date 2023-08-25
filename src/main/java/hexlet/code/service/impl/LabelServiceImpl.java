@@ -1,9 +1,10 @@
-package hexlet.code.service;
+package hexlet.code.service.impl;
 
 import hexlet.code.dto.LabelDto;
-import hexlet.code.exeption.LabelNotFoundException;
+import hexlet.code.exeption.NotFoundServiceException;
 import hexlet.code.model.Label;
 import hexlet.code.repository.LabelRepository;
+import hexlet.code.service.LabelService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +27,7 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public Label findLabelById(final long id) {
         return labelRepository.findById(id)
-                .orElseThrow(() -> new LabelNotFoundException(String.format("Not found label with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found label with 'id': %d", id)));
     }
 
     @Override
@@ -46,7 +47,7 @@ public class LabelServiceImpl implements LabelService {
     @Override
     public Label updateLabelById(final long id, final LabelDto labelDto) {
         final Label labelToUpdate = labelRepository.findById(id)
-                .orElseThrow(() -> new LabelNotFoundException(String.format("Not found label with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found label with 'id': %d", id)));
         labelToUpdate.setName(labelDto.name());
 
         return labelRepository.save(labelToUpdate);

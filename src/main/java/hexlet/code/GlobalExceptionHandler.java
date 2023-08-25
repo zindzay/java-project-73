@@ -1,10 +1,7 @@
 package hexlet.code;
 
 import com.rollbar.notifier.Rollbar;
-import hexlet.code.exeption.LabelNotFoundException;
-import hexlet.code.exeption.StatusNotFoundException;
-import hexlet.code.exeption.TaskNotFoundException;
-import hexlet.code.exeption.UserNotFoundException;
+import hexlet.code.exeption.NotFoundServiceException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -23,8 +20,7 @@ public class GlobalExceptionHandler {
 
     private final Rollbar rollbar;
 
-    @ExceptionHandler(value = {UserNotFoundException.class, StatusNotFoundException.class,
-        TaskNotFoundException.class, LabelNotFoundException.class})
+    @ExceptionHandler(NotFoundServiceException.class)
     public ResponseEntity<String> handleNotFoundException(final RuntimeException exception) {
         rollbar.error(exception.getMessage());
         return new ResponseEntity<>(exception.getMessage(), new HttpHeaders(), HttpStatus.NOT_FOUND);

@@ -1,13 +1,17 @@
-package hexlet.code.service;
+package hexlet.code.service.impl;
 
 import com.querydsl.core.types.Predicate;
 import hexlet.code.dto.TaskDto;
-import hexlet.code.exeption.TaskNotFoundException;
+import hexlet.code.exeption.NotFoundServiceException;
 import hexlet.code.model.Label;
 import hexlet.code.model.Status;
 import hexlet.code.model.Task;
 import hexlet.code.model.User;
 import hexlet.code.repository.TaskRepository;
+import hexlet.code.service.LabelService;
+import hexlet.code.service.StatusService;
+import hexlet.code.service.TaskService;
+import hexlet.code.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +40,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task findTaskById(final long id) {
         return taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException(String.format("Not found task with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found task with 'id': %d", id)));
     }
 
     @Override
@@ -48,7 +52,7 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public Task updateTaskById(final long id, final TaskDto taskDto) {
         final Task task = taskRepository.findById(id)
-                .orElseThrow(() -> new TaskNotFoundException(String.format("Not found task with 'id': %d", id)));
+                .orElseThrow(() -> new NotFoundServiceException(String.format("Not found task with 'id': %d", id)));
         merge(task, taskDto);
         return taskRepository.save(task);
     }
