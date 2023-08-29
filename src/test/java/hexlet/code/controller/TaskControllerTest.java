@@ -72,8 +72,8 @@ class TaskControllerTest {
 
     @AfterEach
     public void clear() {
-        utils.tearDown();
         taskRepository.deleteAll();
+        utils.tearDown();
     }
 
     @Test

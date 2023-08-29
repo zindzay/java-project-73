@@ -1,6 +1,6 @@
 databaseChangeLog:
 - changeSet:
-    id: 1692263224047-1
+    id: 1693311522405-1
     author: zindzay (generated)
     changes:
     - createTable:
@@ -21,7 +21,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: labels
 - changeSet:
-    id: 1692263224047-2
+    id: 1693311522405-2
     author: zindzay (generated)
     changes:
     - createTable:
@@ -42,7 +42,7 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: statuses
 - changeSet:
-    id: 1692263224047-3
+    id: 1693311522405-3
     author: zindzay (generated)
     changes:
     - createTable:
@@ -75,7 +75,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: tasks
 - changeSet:
-    id: 1692263224047-4
+    id: 1693311522405-4
     author: zindzay (generated)
     changes:
     - createTable:
@@ -96,7 +96,7 @@ databaseChangeLog:
             type: BIGINT
         tableName: tasks_labels
 - changeSet:
-    id: 1692263224047-5
+    id: 1693311522405-5
     author: zindzay (generated)
     changes:
     - createTable:
@@ -128,7 +128,24 @@ databaseChangeLog:
             type: VARCHAR(255)
         tableName: users
 - changeSet:
-    id: 1692263224047-6
+    id: 1693311522405-6
+    author: zindzay (generated)
+    changes:
+    - createTable:
+        columns:
+        - column:
+            constraints:
+              nullable: false
+            name: user_id
+            type: BIGINT
+        - column:
+            constraints:
+              nullable: false
+            name: tasks_id
+            type: BIGINT
+        tableName: users_tasks
+- changeSet:
+    id: 1693311522405-7
     author: zindzay (generated)
     changes:
     - addForeignKeyConstraint:
@@ -141,7 +158,20 @@ databaseChangeLog:
         referencedTableName: labels
         validate: true
 - changeSet:
-    id: 1692263224047-7
+    id: 1693311522405-8
+    author: zindzay (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: user_id
+        baseTableName: users_tasks
+        constraintName: FK6frwjo48hefay0rg31q970r8t
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1693311522405-9
     author: zindzay (generated)
     changes:
     - addForeignKeyConstraint:
@@ -154,7 +184,7 @@ databaseChangeLog:
         referencedTableName: tasks
         validate: true
 - changeSet:
-    id: 1692263224047-8
+    id: 1693311522405-10
     author: zindzay (generated)
     changes:
     - addForeignKeyConstraint:
@@ -167,7 +197,7 @@ databaseChangeLog:
         referencedTableName: users
         validate: true
 - changeSet:
-    id: 1692263224047-9
+    id: 1693311522405-11
     author: zindzay (generated)
     changes:
     - addForeignKeyConstraint:
@@ -180,7 +210,7 @@ databaseChangeLog:
         referencedTableName: statuses
         validate: true
 - changeSet:
-    id: 1692263224047-10
+    id: 1693311522405-12
     author: zindzay (generated)
     changes:
     - addForeignKeyConstraint:
@@ -191,5 +221,18 @@ databaseChangeLog:
         initiallyDeferred: false
         referencedColumnNames: id
         referencedTableName: users
+        validate: true
+- changeSet:
+    id: 1693311522405-13
+    author: zindzay (generated)
+    changes:
+    - addForeignKeyConstraint:
+        baseColumnNames: tasks_id
+        baseTableName: users_tasks
+        constraintName: FKphskmyjd10svfk7iwnda2rib0
+        deferrable: false
+        initiallyDeferred: false
+        referencedColumnNames: id
+        referencedTableName: tasks
         validate: true
 
